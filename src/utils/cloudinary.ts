@@ -6,7 +6,7 @@ const imageUploadFunc = async (imagePath:string) => {
     cloudinaryConfig()
   const result = await cloudinary.uploader.upload(`public/${imagePath}`, {
     folder: "Next-file-Uploads",
-    public_id: "Next-file-Uploads",
+    public_id: "Next-file-Uploads-uploader",
   });
   console.log( { result });
 

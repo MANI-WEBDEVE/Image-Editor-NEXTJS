@@ -25,20 +25,22 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   const filename = Date.now() + Date.now() + path.extname(file.name);
 
   try {
-    // Write the file to the specified directory (public/assets) with the modified filename
+    
     await writeFile(path.join(process.cwd(), "public/" + filename), buffer);
 
     const result = await imageUploadFunc(filename);
-    const updateImage = cloudinary.image(result.public_id, {
-      effect: "gen_background_replace:person standing the moon",
-    });
-    console.log(`maniinam: ${updateImage}`);
-    // Return a JSON response with a success message and a 201 status code
+   
+    const updatedImage = cloudinary.image(result.public_id, {effect: "gen_background_replace:prompt_person:person background remove an d add black background"})
+
+
+
+
     return NextResponse.json({
       Message: "Success",
       status: 201,
       secure_url: result.secure_url,
       public_id: result.public_id,
+      updatedImage
     });
   } catch (error) {
     // If an error occurs during file writing, log the error and return a JSON response with a failure message and a 500 status code
