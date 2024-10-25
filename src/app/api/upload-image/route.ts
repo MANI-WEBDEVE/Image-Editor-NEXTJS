@@ -11,6 +11,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
   // Get the file from the form data and assert its type as 'File'
   const file = formData.get("file") as File;
+    const prompt = formData.get("userPrompt") as string
 
   // Check if a file is received
   if (!file) {
@@ -30,7 +31,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     const result = await imageUploadFunc(filename);
 
-    const updatedImage = cloudinary.image(result.public_id, {effect: "gen_background_replace:prompt_person:person background remove and add dark black background"})
+    const updatedImage = cloudinary.image(result.public_id, {effect: "gen_background_replace:prompt_person:" + prompt})
 
 
 
