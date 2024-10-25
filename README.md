@@ -2,6 +2,8 @@
 
 Welcome to the AI-Powered Image Editor! This web application allows users to easily edit and enhance images using Cloudinary's cutting-edge Generative AI technology. With intuitive controls and real-time processing, users can perform complex image editing tasks without any design expertise.
 
+![My Image](./public/demo.jpg)
+
 ## Table of Contents
 
 ### Features
@@ -25,8 +27,8 @@ Welcome to the AI-Powered Image Editor! This web application allows users to eas
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Environment Variables
- 
-``` bash
+
+```bash
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
@@ -47,7 +49,7 @@ We welcome contributions! If you'd like to improve the project or add new featur
 
 ### Create a new branch for your feature or bug fix
 
-``` bash
+```bash
 git checkout -b feature/new-feature
 
 ```
@@ -60,7 +62,7 @@ git commit -m 'Add new feature'
 
 ### Push to your branch:
 
-``` bash
+```bash
 git push origin feature/new-feature
 
 ```
