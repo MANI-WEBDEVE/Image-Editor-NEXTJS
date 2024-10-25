@@ -22,15 +22,15 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   const buffer = Buffer.from(await file.arrayBuffer());
 
   // Replace spaces in the file name with underscores
-  const filename = Date.now() + Date.now() + path.extname(file.name);
+  const filename = Date.now()  + path.extname(file.name);
 
   try {
-    
+
     await writeFile(path.join(process.cwd(), "public/" + filename), buffer);
 
     const result = await imageUploadFunc(filename);
-   
-    const updatedImage = cloudinary.image(result.public_id, {effect: "gen_background_replace:prompt_person:person background remove an d add black background"})
+
+    const updatedImage = cloudinary.image(result.public_id, {effect: "gen_background_replace:prompt_person:person background remove and add dark black background"})
 
 
 
