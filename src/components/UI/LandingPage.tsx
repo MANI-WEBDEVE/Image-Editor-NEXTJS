@@ -38,15 +38,11 @@ const LandingPage = () => {
     formData.append("userPrompt", userPrompt);
 
     try {
-      const response = await axios.post(
-        "/api/upload-image",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("/api/upload-image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       const data = response.data;
       const image = data.updatedImage;
       const url = image.match(/src=['"](.*?)['"]/)[1];
@@ -63,14 +59,14 @@ const LandingPage = () => {
 
   return (
     <>
-      <div className="w-full mt-9 px-10 text-white flex items-start justify-center">
+      <div className="w-full h-full  mt-9 px-10 text-white flex items-start justify-center flex-col">
         <div className="w-full flex items-center justify-center flex-col gap-5 border-2 border-blue-500 rounded-lg p-5">
           <label
             htmlFor="file"
-            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200 cursor-pointer"
+            className="flex items-center px-4 py-2 bg-black border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200 cursor-pointer"
           >
-            <Upload name="image" className="w-5 h-5 mr-2 text-black" />
-            <span className="text-gray-700">Choose image</span>
+            <Upload name="image" className="w-5 h-5 mr-2 text-blue-500" />
+            <span className="text-gray-100">Choose image</span>
             <input
               type="file"
               id="file"
@@ -85,7 +81,7 @@ const LandingPage = () => {
               placeholder="Enter prompt"
               value={userPrompt}
               onChange={(e) => setUserPrompt(e.target.value)}
-              className="w-full bg-transparent   px-4 py-2 border border-gray-300 text-white rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+              className="w-full bg-transparent  pl-10 pr-[200px] py-2 border border-gray-700 text-white rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
             />
           </label>
           <button
@@ -95,27 +91,27 @@ const LandingPage = () => {
             Upload File
           </button>
         </div>
-      </div>
-      <div className="w-full h-dvh flex justify-start flex-wrap px-10 mt-10 gap-6">
-        {urls.map((image, index) => (
-          <div
-            key={index}
-            className="w-[20%] h-[50%] rounded-xl flex justify-center items-start border-[1px] border-blue-500"
-          >
-            <div className="w-[85%] h-[96%] mt-2 rounded-xl flex justify-start items-center flex-col gap-6">
-              <img
-                className="rounded-xl object-cover w-full h-full"
-                src={image}
-                alt=""
-              />
-              <Button className="text-center mt-4 font-semibold uppercase bg-blue-600">
-                <Link key={index} href={image} target="_blank">
-                  Open the Image
-                </Link>
-              </Button>
+        <div className="w-full h-full flex justify-center flex-wrap px-10 mt-10 gap-6 mb-4">
+          {urls.map((image, index) => (
+            <div
+              key={index}
+              className="w-[20%]  rounded-xl flex justify-center items-start border-[1px] border-blue-500"
+            >
+              <div className="w-[85%] h-[96%] mt-2 rounded-xl flex justify-start items-center flex-col gap-6">
+                <img
+                  className="rounded-xl object-cover w-full h-full"
+                  src={image}
+                  alt=""
+                />
+                <Button className="text-center mt-4 font-semibold uppercase bg-blue-600">
+                  <Link key={index} href={image} target="_blank">
+                    Open the Image
+                  </Link>
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   );
