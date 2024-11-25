@@ -29,7 +29,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     await writeFile(path.join(process.cwd(), "public/" + filename), buffer);
 
-    const result = await imageUploadFunc(filename);
+    const result:any = await imageUploadFunc(filename);
 
     const updatedImage = cloudinary.image(result.public_id, {effect: "gen_background_replace:prompt_person:" + prompt})
 

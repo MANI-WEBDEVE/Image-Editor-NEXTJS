@@ -45,6 +45,7 @@ const LandingPage = () => {
       });
       const data = response.data;
       const image = data.updatedImage;
+      console.log({data})
       const url = image.match(/src=['"](.*?)['"]/)[1];
       setImageTag(url);
 

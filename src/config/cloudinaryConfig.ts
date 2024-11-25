@@ -9,7 +9,7 @@ const cloudinaryConfig = async () => {
         })
         console.log("connected to cloudinary")
     } catch (error) {
-        
+        console.log(error)
     }
 }
 
