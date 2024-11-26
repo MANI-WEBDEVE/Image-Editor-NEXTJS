@@ -9,7 +9,7 @@ export const POST = async (req: Request) => {
   try {
     const { username, email, password } = await req.json();
 
-    console.log({ username, email, password });
+   
     if (!username || !email || !password) {
       return NextResponse.json(
         { error: "Missing credentials" },
@@ -36,16 +36,7 @@ export const POST = async (req: Request) => {
       password: hashedPassword,
     });
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: newUser._id, email: newUser.email },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '1m' }
-    );
-
-    // Update user with token
-    await User.findByIdAndUpdate(newUser._id, { token: token });
-
+    
     // Set token in cookie
    return NextResponse.json({message: "user created"}, { status: 201 });
 

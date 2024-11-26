@@ -2,9 +2,10 @@
 import { Button } from '@/components/UI/button'
 import { Input } from '@/components/UI/input'
 import axios, { AxiosError } from 'axios'
-import { Eye, EyeClosed, Loader } from 'lucide-react'
+import { Eye, EyeClosed , Loader } from 'lucide-react'
 // import { cookies } from 'next/headers'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
@@ -42,12 +43,13 @@ const page = () => {
       setLoadingSubmitForm(true);
       const response = await axios.post("/api/login", formData);
       if (response.status === 200) {
-        toast.success("log in successfully", {position: "top-right"});
-      
+        toast.success(response.data.message, {position: "top-right"});
+        router.push("/dashboard")
       }
     } catch (error) {
       const err = error as AxiosError<ApiErrorResponse>;
       const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message;
+      toast.error(errorMessage, {position: "top-right"})
       console.log("error", errorMessage);
     } finally {
       setLoadingSubmitForm(false);
@@ -121,6 +123,11 @@ const page = () => {
               </div>
             </>
           )}
+            <div>
+              <Link href={'/sign-in'}>
+                <p className="text-xs text-blue-700">Don't have an account? Sign up</p>
+              </Link>
+          </div>
         </div>
       </section>
     </>

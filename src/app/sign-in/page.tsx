@@ -7,6 +7,7 @@ import axios, { AxiosError } from "axios";
 import { Eye, EyeClosed, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Link from "next/link";
 interface FormDataSignIn {
   username: string | undefined;
   email: string | undefined;
@@ -36,12 +37,13 @@ const page = () => {
       setLoadingSubmitForm(true);
       const response = await axios.post("/api/sign-in", formData);
       if (response.status === 201) {
-        toast.success("Sign in successfully");
+        toast.success(response.data.message, { position: "top-right" });
           router.push("/login")
       }
     } catch (error) {
       const err = error as AxiosError<ApiErrorResponse>;
       const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message;
+      toast.error(errorMessage, { position: "top-right" })
       console.log("error", errorMessage);
     } finally {
       setLoadingSubmitForm(false);
@@ -120,6 +122,11 @@ const page = () => {
               </div>
             </>
           )}
+          <div>
+              <Link href={'/login'}>
+                <p className="text-xs text-blue-700">Already have an account? Login</p>
+              </Link>
+          </div>
         </div>
       </section>
     </>

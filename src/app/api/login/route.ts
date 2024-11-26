@@ -2,6 +2,8 @@ import connectDB from "@/config/connectdb";
 import User from "@/models/User-Schema";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
 
 export const POST = async (req: Request) => {
   await connectDB();
@@ -31,6 +33,18 @@ export const POST = async (req: Request) => {
       );
     }
 
+    // Generate JWT token
+    const token = jwt.sign(
+        { userId: findUser._id, email: findUser.email },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '7d' }
+      );
+  
+      // Update user with token
+      await User.findByIdAndUpdate(findUser, { token: token });
+  
+
+
     const response = NextResponse.json(
       { message: "Login successful"},
       { status: 200 }
@@ -43,7 +57,7 @@ export const POST = async (req: Request) => {
       httpOnly: true,
       secure: true, // process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60, // 1 minute
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
     return response;
