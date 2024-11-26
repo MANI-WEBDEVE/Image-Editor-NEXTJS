@@ -1,36 +1,34 @@
-"use client"
-import { Button } from '@/components/UI/button'
-import { Input } from '@/components/UI/input'
-import axios, { AxiosError } from 'axios'
-import { Eye, EyeClosed , Loader } from 'lucide-react'
+"use client";
+import { Button } from "@/components/UI/button";
+import { Input } from "@/components/UI/input";
+import userInfoData from "@/store/slice";
+import axios, { AxiosError } from "axios";
+import { Eye, EyeClosed, Loader } from "lucide-react";
 // import { cookies } from 'next/headers'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
-import toast from 'react-hot-toast'
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 interface FormDataSignIn {
-    
-    email: string | undefined;
-    password: string | undefined;
-  }
-  
-  interface ApiErrorResponse {
-    message?: string;
-    error?: string;
-  }
-  
+  email: string | undefined;
+  password: string | undefined;
+}
 
+interface ApiErrorResponse {
+  message?: string;
+  error?: string;
+}
 
 const page = () => {
-    const router = useRouter()
-    const [formData, setFormData] = useState<FormDataSignIn | null>();
-    const [togglePassword, setTogglePassword] = useState<boolean>(false);
-    const [loadingSubmitForm, setLoadingSubmitForm] = useState<boolean>(false);
+  const userInfo = userInfoData();
+  const router = useRouter();
+  const [formData, setFormData] = useState<FormDataSignIn | null>();
+  const [userData, setUserData] = useState<{username: string, email: string} | null | undefined>();
+  const [togglePassword, setTogglePassword] = useState<boolean>(false);
+  const [loadingSubmitForm, setLoadingSubmitForm] = useState<boolean>(false);
 
-
-    
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -42,24 +40,42 @@ const page = () => {
     try {
       setLoadingSubmitForm(true);
       const response = await axios.post("/api/login", formData);
+    //   setUserData(response.data);
+      //   const email = userInfoData((state) =>
+      //     state.updateEmail(response.data.email)
+      //   );
+      //   const username = userInfoData((state) =>
+      //     state.updateUsername(response.data.username)
+      //   );
+      //   console.log(email, username);
+      //   console.log(response.data.email)
+      //   console.log(response.data.username)
       if (response.status === 200) {
-        toast.success(response.data.message, {position: "top-right"});
-        router.push("/dashboard")
+        toast.success(response.data.message, { position: "top-right" });
+        router.push("/dashboard");
       }
     } catch (error) {
       const err = error as AxiosError<ApiErrorResponse>;
-      const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message;
-      toast.error(errorMessage, {position: "top-right"})
+      const errorMessage =
+        err.response?.data?.message || err.response?.data?.error || err.message;
+      toast.error(errorMessage, { position: "top-right" });
       console.log("error", errorMessage);
     } finally {
       setLoadingSubmitForm(false);
     }
   };
 
+//   const email = userInfoData((state) => state.updateEmail(userData?.email as string));
+//   const username = userInfoData((state) =>
+//     state.updateUsername(userData?.username as string)
+//   );
+
+//   console.log(email, username)
+
 
   return (
     <>
-     <section className="w-full h-screen bg-black grid md:grid-cols-2 relative overflow-hidden">
+      <section className="w-full h-screen bg-black grid md:grid-cols-2 relative overflow-hidden">
         <div className="w-full h-screen hidden md:block">
           <Image
             src={
@@ -78,7 +94,6 @@ const page = () => {
             <span className="text-blue-500 font-thin">Log</span> In
           </h1>
           <div className=" w-1/2 flex  flex-col items-center justify-center gap-4 ">
-            
             <Input
               className="py-5 pr-10 pl-3 border-[1px] border-blue-600 z-[20]"
               placeholder="Enter email"
@@ -94,7 +109,10 @@ const page = () => {
                 name="password"
                 onChange={handleChangeInput}
               />
-              <div className="z-[20] cursor-pointer" onClick={() => setTogglePassword(!togglePassword)}>
+              <div
+                className="z-[20] cursor-pointer"
+                onClick={() => setTogglePassword(!togglePassword)}
+              >
                 {togglePassword ? (
                   <>
                     <Eye className="absolute right-2 top-1/2 -translate-y-1/2" />
@@ -107,8 +125,16 @@ const page = () => {
           </div>
           {loadingSubmitForm ? (
             <>
-              <Button className="bg-blue-700 font-bold uppercase text-black py-5 px-7 text-md flex items-center gap-2" disabled>
-                Sign In <Loader className="animate-spin" style={{ width: '24px', height: '24px' }} strokeWidth={2} />
+              <Button
+                className="bg-blue-700 font-bold uppercase text-black py-5 px-7 text-md flex items-center gap-2"
+                disabled
+              >
+                Sign In{" "}
+                <Loader
+                  className="animate-spin"
+                  style={{ width: "24px", height: "24px" }}
+                  strokeWidth={2}
+                />
               </Button>
             </>
           ) : (
@@ -123,15 +149,17 @@ const page = () => {
               </div>
             </>
           )}
-            <div>
-              <Link href={'/sign-in'}>
-                <p className="text-xs text-blue-700">Don't have an account? Sign up</p>
-              </Link>
+          <div>
+            <Link href={"/sign-in"}>
+              <p className="text-xs text-blue-700">
+                Don't have an account? Sign up
+              </p>
+            </Link>
           </div>
         </div>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default page
+export default page;

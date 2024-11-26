@@ -8,7 +8,7 @@ export function isTokenExpired(token: string): boolean {
   try {
     // Decode the token without verifying
     const decoded = jwt.decode(token) as JWTPayload;
-
+    
     // Check if the token has an `exp` field
     if (!decoded || !decoded.exp) {
       return true; // Treat as expired if no exp field is present

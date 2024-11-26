@@ -6,7 +6,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/select"
+} from "@/components/UI/select"
 import { Button } from "./UI/button";
 
 const Header = () => {
