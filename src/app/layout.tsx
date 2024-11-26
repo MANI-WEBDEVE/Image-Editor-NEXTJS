@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Header from "@/components/Header";
 // import { ConfigProvider } from 'antd';
 
 
@@ -17,9 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
+      <body className="bg-black"
       >
         {/* <ConfigProvider direction="rtl"> */}
+        <Header/>
         {children}
         <Toaster />
         {/* </ConfigProvider> */}
