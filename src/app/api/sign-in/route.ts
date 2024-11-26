@@ -47,13 +47,7 @@ export const POST = async (req: Request) => {
     await User.findByIdAndUpdate(newUser._id, { token: token });
 
     // Set token in cookie
-    const response = NextResponse.json({ 
-      message: "Success", 
-      user: {
-        username: newUser.username,
-        email: newUser.email
-      }
-    }, { status: 201 });
+   return NextResponse.json({message: "user created"}, { status: 201 });
 
     // // Set HTTP-only cookie
     // response.cookies.set({
