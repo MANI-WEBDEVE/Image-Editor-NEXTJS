@@ -40,7 +40,7 @@ export const POST = async (req: Request) => {
     const token = jwt.sign(
       { userId: newUser._id, email: newUser.email },
       process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '7d' }
+      { expiresIn: '1m' }
     );
 
     // Update user with token
