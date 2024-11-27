@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const cookieStore = cookies();
     const token = cookieStore.get("token");
-    console.log(token);
+ 
     if (!token) {
       return NextResponse.json(
         { error: "No token found" },

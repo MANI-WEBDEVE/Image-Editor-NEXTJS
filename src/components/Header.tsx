@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "../app/globals.css";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/UI/avatar";
+import { Avatar, AvatarFallback } from "@/components/UI/avatar";
 // import Cookies from 'js-cookie';
 // import {jwtDecode} from 'jwt-decode';
 import {
@@ -13,10 +13,12 @@ import {
 import { Button } from "./UI/button";
 import userInfoData from "@/store/slice";
 import { LoaderCircle } from "lucide-react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { ApiError } from "next/dist/server/api-utils";
+import { UploadApiErrorResponse } from "cloudinary";
 
 
 const Header = () => {
@@ -57,14 +59,15 @@ const Header = () => {
 
     try{
       const response = await axios.post("/api/logout");
-      console.log(response.data);
+  
       updateEmail("");
       updateUsername("");
       toast.success(response.data.message , { position: "top-right" });
       
       router.push("/login");
     } catch (error) {
-      console.log(error)
+        const err = error as AxiosError<UploadApiErrorResponse>;
+        toast.error(err.response?.data?.message || err.response?.data?.error || err.message, { position: "top-right" })
     }
 
   }

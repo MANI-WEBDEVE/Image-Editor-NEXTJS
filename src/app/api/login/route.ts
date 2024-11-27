@@ -8,7 +8,7 @@ export const POST = async (req: Request) => {
   await connectDB();
   try {
     const { email, password } = await req.json();
-    console.log(process.env.JWT_SECRET);
+   
     if (!email || !password) {
       return NextResponse.json(
         { error: "Missing credentials" },

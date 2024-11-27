@@ -6,7 +6,7 @@ export const POST = async (request:Request, response:Response) => {
     try {
         const cookieStore = cookies();
         const token = cookieStore.get("token");
-        console.log(token);
+     
         if (!token) {
             return NextResponse.json({ error: "You already logged out" }, { status: 401 });
         }

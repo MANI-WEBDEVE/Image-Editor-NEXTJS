@@ -44,7 +44,7 @@ const page = () => {
       const err = error as AxiosError<ApiErrorResponse>;
       const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message;
       toast.error(errorMessage, { position: "top-right" })
-      console.log("error", errorMessage);
+    
     } finally {
       setLoadingSubmitForm(false);
     }
