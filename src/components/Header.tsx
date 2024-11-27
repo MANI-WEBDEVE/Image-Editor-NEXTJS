@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from "react";
 import "../app/globals.css";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/UI/avatar";
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 // import {jwtDecode} from 'jwt-decode';
 import {
   Select,
   SelectContent,
-  SelectItem,
+  // SelectItem,
   SelectTrigger,
 } from "@/components/UI/select";
 import { Button } from "./UI/button";
@@ -16,6 +16,7 @@ import { LoaderCircle } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 
 const Header = () => {
@@ -23,6 +24,7 @@ const Header = () => {
   const userInfo = userInfoData();
   const { updateEmail, updateUsername } = userInfoData();
   const [updateUserInfo, setUpdateUserInfo] = useState<boolean>(false);
+  // const [token, setToken] = useState<string >();
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -35,8 +37,7 @@ const Header = () => {
         setUpdateUserInfo(true);
         const response = await fetch("/api/user");
         const data = await response.json();
-        
-        console.log(data.token.value)
+        // setToken(data.token.value)
         if (response.ok && data.user) {
           updateEmail(data.user.email);
           updateUsername(data.user.username);
@@ -202,42 +203,54 @@ const Header = () => {
           </defs>
         </svg>
       </div>
-      <div className="flex items-end  gap-3 mr-[2.3rem]">
+    {userInfo?.email.length > 0 ? (
+         <div className="flex items-end  gap-3 mr-[2.3rem]">
+         <Button className="hidden md:block bg-blue-600 text-md font-medium">
+           Dashboard
+         </Button>
+         {updateUserInfo ? (
+           <>
+             <LoaderCircle
+               className="animate-spin"
+               style={{ width: "34px", height: "44px" }}
+               strokeWidth={2}
+             />
+           </>
+         ) : (
+           <>
+             <Select>
+               <SelectTrigger className="w-[1px] border-none">
+                 <Avatar>
+                  
+                   <AvatarFallback className="text-black text-lg font-bold">{userInfo.username.split(" ")[0].charAt(0).toUpperCase()}</AvatarFallback>
+                 </Avatar>
+               </SelectTrigger>
+               <SelectContent className="bg-gray-100/90">
+                 <div className=" px-2 py-2 uppercase">
+                   {userInfo.username}                  
+                 </div>
+                 <div className="px-2 py-2 " >
+                 {userInfo.email}
+                 </div>
+                 <Button className="bg-blue-600 hover:bg-blue-700 transition-all" onClick={handleLogOut}> 
+                   Logout
+                 </Button>
+               </SelectContent>
+             </Select>
+           </>
+         )}
+       </div>
+
+    ) : (
+      <>
+        <div className="flex items-end  gap-3 mr-[2.3rem]">
         <Button className="hidden md:block bg-blue-600 text-md font-medium">
-          Dashboard
-        </Button>
-        {updateUserInfo ? (
-          <>
-            <LoaderCircle
-              className="animate-spin"
-              style={{ width: "34px", height: "44px" }}
-              strokeWidth={2}
-            />
-          </>
-        ) : (
-          <>
-            <Select>
-              <SelectTrigger className="w-[1px] border-none">
-                <Avatar>
-                 
-                  <AvatarFallback className="text-black text-lg font-bold">{userInfo.username.split(" ")[0].charAt(0).toUpperCase()}</AvatarFallback>
-                </Avatar>
-              </SelectTrigger>
-              <SelectContent className="bg-gray-100/90">
-                <div className=" px-2 py-2 uppercase">
-                  {userInfo.username}                  
-                </div>
-                <div className="px-2 py-2 " >
-                {userInfo.email}
-                </div>
-                <Button className="bg-blue-600 hover:bg-blue-700 transition-all" onClick={handleLogOut}> 
-                  Logout
-                </Button>
-              </SelectContent>
-            </Select>
-          </>
-        )}
-      </div>
+         <Link href="/login">Login</Link>
+         </Button>
+        </div>
+      </>
+    )}
+     
     </div>
   );
 };
