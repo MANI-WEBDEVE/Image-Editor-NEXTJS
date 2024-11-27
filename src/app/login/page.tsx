@@ -4,7 +4,6 @@ import { Input } from "@/components/UI/input";
 import userInfoData from "@/store/slice";
 import axios, { AxiosError } from "axios";
 import { Eye, EyeClosed, Loader } from "lucide-react";
-// import { cookies } from 'next/headers'
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,36 +21,30 @@ interface ApiErrorResponse {
 }
 
 const page = () => {
-  const userInfo = userInfoData();
   const router = useRouter();
-  const [formData, setFormData] = useState<FormDataSignIn | null>();
-  const [userData, setUserData] = useState<{username: string, email: string} | null | undefined>();
-  const [togglePassword, setTogglePassword] = useState<boolean>(false);
+  const { updateEmail, updateUsername } = userInfoData();
+  const [formData, setFormData] = useState<FormDataSignIn | null | any>();
   const [loadingSubmitForm, setLoadingSubmitForm] = useState<boolean>(false);
+  const [togglePassword, setTogglePassword] = useState<boolean>(false);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    } as FormDataSignIn);
+    });
   };
 
   const handleSubmitForm = async () => {
     try {
       setLoadingSubmitForm(true);
       const response = await axios.post("/api/login", formData);
-    //   setUserData(response.data);
-      //   const email = userInfoData((state) =>
-      //     state.updateEmail(response.data.email)
-      //   );
-      //   const username = userInfoData((state) =>
-      //     state.updateUsername(response.data.username)
-      //   );
-      //   console.log(email, username);
-      //   console.log(response.data.email)
-      //   console.log(response.data.username)
+
       if (response.status === 200) {
+        updateEmail(response.data.email);
+        updateUsername(response.data.username);
+        
         toast.success(response.data.message, { position: "top-right" });
+        await new Promise(resolve => setTimeout(resolve, 100));
         router.push("/dashboard");
       }
     } catch (error) {
@@ -64,14 +57,6 @@ const page = () => {
       setLoadingSubmitForm(false);
     }
   };
-
-//   const email = userInfoData((state) => state.updateEmail(userData?.email as string));
-//   const username = userInfoData((state) =>
-//     state.updateUsername(userData?.username as string)
-//   );
-
-//   console.log(email, username)
-
 
   return (
     <>

@@ -1,15 +1,49 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import "../app/globals.css";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/UI/avatar";
+// import Cookies from 'js-cookie';
+// import {jwtDecode} from 'jwt-decode';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/UI/select"
+} from "@/components/UI/select";
 import { Button } from "./UI/button";
+import userInfoData from "@/store/slice";
+import { LoaderCircle } from "lucide-react";
 
 const Header = () => {
+  const userInfo = userInfoData();
+  const { updateEmail, updateUsername } = userInfoData();
+  const [updateUserInfo, setUpdateUserInfo] = useState<boolean>(false);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      // If we already have user info, don't make the API call
+      if (userInfo.email && userInfo.username) {
+        return;
+      }
+
+      try {
+        setUpdateUserInfo(true);
+        const response = await fetch("/api/user");
+        const data = await response.json();
+
+        if (response.ok && data.user) {
+          updateEmail(data.user.email);
+          updateUsername(data.user.username);
+        }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      } finally {
+        setUpdateUserInfo(false);
+      }
+    };
+    getUserInfo();
+  }, [userInfo.email, userInfo.username, updateEmail, updateUsername]);
+
   return (
     <div className="w-full  flex items-center justify-between fixed top-0 left-0 bg-black/30 backdrop-blur-md ">
       {/* <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-blue-600 h-[0.005rem] w-[94.5%]"></div> */}
@@ -143,23 +177,41 @@ const Header = () => {
           </defs>
         </svg>
       </div>
-      <div className="flex items-center gap-3 mr-[2.3rem]">
-        <Button className="hidden md:block bg-blue-600 text-md font-medium">Dashboard</Button>
-              <Select >
-                <SelectTrigger className="w-[1px] border-none">
-              
-              <Avatar >
-              <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-                </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="system">System</SelectItem>
+      <div className="flex items-end  gap-3 mr-[2.3rem]">
+        <Button className="hidden md:block bg-blue-600 text-md font-medium">
+          Dashboard
+        </Button>
+        {updateUserInfo ? (
+          <>
+            <LoaderCircle
+              className="animate-spin"
+              style={{ width: "34px", height: "44px" }}
+              strokeWidth={2}
+            />
+          </>
+        ) : (
+          <>
+            <Select>
+              <SelectTrigger className="w-[1px] border-none">
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </SelectTrigger>
+              <SelectContent className="bg-gray-100/90">
+                <div className=" px-2 py-2 uppercase">
+                  {userInfo.username}                  
+                </div>
+                <div className="px-2 py-2 " >
+                {userInfo.email}
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700 transition-all"> 
+                  Logout
+                </Button>
               </SelectContent>
             </Select>
-
+          </>
+        )}
       </div>
     </div>
   );

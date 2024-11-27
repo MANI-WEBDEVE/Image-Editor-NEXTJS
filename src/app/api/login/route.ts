@@ -4,12 +4,11 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-
 export const POST = async (req: Request) => {
   await connectDB();
   try {
     const { email, password } = await req.json();
-
+    console.log(process.env.JWT_SECRET);
     if (!email || !password) {
       return NextResponse.json(
         { error: "Missing credentials" },
@@ -35,29 +34,33 @@ export const POST = async (req: Request) => {
 
     // Generate JWT token
     const token = jwt.sign(
-        { userId: findUser._id, email: findUser.email },
-        process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '7d' }
-      );
-  
-      // Update user with token
-      await User.findByIdAndUpdate(findUser, { token: token });
-  
+      { userId: findUser._id, email: findUser.email, username: findUser.username },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '7d' }
+    );
 
+    // Update user with token
+    await User.findByIdAndUpdate(findUser, { token: token });
 
     const response = NextResponse.json(
-      { message: "Login successful", username:findUser.username, email:findUser.email },
+      { 
+        message: "Login successful", 
+        username: findUser.username, 
+        email: findUser.email,
+        userId: findUser._id 
+      },
       { status: 200 }
     );
 
-    // // Set HTTP-only cookie
+    // Set the cookie in the response
     response.cookies.set({
-      name: "token",
-      value: findUser.token,
+      name: 'token',
+      value: token,
       httpOnly: true,
-      secure: true, // process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 // 7 days
     });
 
     return response;
