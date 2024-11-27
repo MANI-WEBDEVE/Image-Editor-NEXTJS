@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "../app/globals.css";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/UI/avatar";
-// import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 // import {jwtDecode} from 'jwt-decode';
 import {
   Select,
@@ -13,8 +13,13 @@ import {
 import { Button } from "./UI/button";
 import userInfoData from "@/store/slice";
 import { LoaderCircle } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
 
 const Header = () => {
+  const router = useRouter();
   const userInfo = userInfoData();
   const { updateEmail, updateUsername } = userInfoData();
   const [updateUserInfo, setUpdateUserInfo] = useState<boolean>(false);
@@ -30,7 +35,8 @@ const Header = () => {
         setUpdateUserInfo(true);
         const response = await fetch("/api/user");
         const data = await response.json();
-
+        
+        console.log(data.token.value)
         if (response.ok && data.user) {
           updateEmail(data.user.email);
           updateUsername(data.user.username);
@@ -41,8 +47,27 @@ const Header = () => {
         setUpdateUserInfo(false);
       }
     };
-    getUserInfo();
+   
+      getUserInfo();
+  
   }, [userInfo.email, userInfo.username, updateEmail, updateUsername]);
+
+  const handleLogOut = async () => {
+
+    try{
+      const response = await axios.post("/api/logout");
+      console.log(response.data);
+      updateEmail("");
+      updateUsername("");
+      toast.success(response.data.message , { position: "top-right" });
+      
+      router.push("/login");
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
 
   return (
     <div className="w-full  flex items-center justify-between fixed top-0 left-0 bg-black/30 backdrop-blur-md ">
@@ -194,8 +219,8 @@ const Header = () => {
             <Select>
               <SelectTrigger className="w-[1px] border-none">
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
+                 
+                  <AvatarFallback className="text-black text-lg font-bold">{userInfo.username.split(" ")[0].charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
               </SelectTrigger>
               <SelectContent className="bg-gray-100/90">
@@ -205,7 +230,7 @@ const Header = () => {
                 <div className="px-2 py-2 " >
                 {userInfo.email}
                 </div>
-                <Button className="bg-blue-600 hover:bg-blue-700 transition-all"> 
+                <Button className="bg-blue-600 hover:bg-blue-700 transition-all" onClick={handleLogOut}> 
                   Logout
                 </Button>
               </SelectContent>

@@ -18,7 +18,8 @@ export async function GET() {
     const decoded = jwt.verify(token.value, process.env.JWT_SECRET as string);
     
     return NextResponse.json({
-      user: decoded
+      user: decoded,
+      token
     }, { status: 200 });
 
   } catch (error) {

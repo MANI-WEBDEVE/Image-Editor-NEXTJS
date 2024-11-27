@@ -1,6 +1,9 @@
+import Header from "@/components/Header";
 import type { Metadata } from "next";
-import "./globals.css";
-import { Toaster } from "react-hot-toast"
+
+
+
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,16 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="bg-black"
-      >
-      
+   
+     
+    <>
+    <Header/>
+    {children}
+    </>
        
-        {children}
-        <Toaster />
-      
-      </body>
-    </html>
   );
 }
  
